@@ -1,41 +1,31 @@
-package com.example.kbcsorteios
+package com.kbc.sorteios
 
 import android.os.Bundle
-import androidx.activity.ComponentActivity
-import androidx.activity.compose.setContent
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.*
-import androidx.compose.runtime.*
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.unit.dp
+import android.webkit.WebSettings
+import android.webkit.WebView
+import android.webkit.WebViewClient
+import androidx.appcompat.app.AppCompatActivity
 
-class MainActivity : ComponentActivity() {
+class MainActivity : AppCompatActivity() {
+    private lateinit var webView: WebView
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState) 
-        setContent {
-            MaterialTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = MaterialTheme.colorScheme.background
-                ) {
-                    KbcSorteiosMainScreen()
-                }
+        webView = WebView(this)
+        val settings: WebSettings = webView.settings
+        settings.javaScriptEnabled = true
+        settings.domStorageEnabled = true
+        settings.useWideViewPort = true
+        settings.loadWithOverviewMode = true
+        
+        webView.webViewClient = object : WebViewClient() {
+            override fun shouldOverrideUrlLoading(view: WebView?, url: String?): Boolean {
+                return false
             }
         }
-    }
-}
-
-@Composable
-fun KbcSorteiosMainScreen() {
-    Column(modifier = Modifier.padding(16.dp)) {
-        Text(
-            text = "kbc-Sorteios",
-            style = MaterialTheme.typography.headlineMedium
-        )
-        Spacer(modifier = Modifier.height(8.dp))
-        Text(
-            text = "Sorteador Inteligente de Times com Nível por Estrelas e Cronômetro com Alarme.",
-            style = MaterialTheme.typography.bodyLarge
-        )
+        
+        // Carrega o applet kbc-Sorteios localmente
+        webView.loadUrl("file:///android_asset/index.html")
+        setContentView(webView)
     }
 }
