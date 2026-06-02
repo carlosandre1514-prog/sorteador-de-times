@@ -1,47 +1,49 @@
-import 'package:flutter/material.dart';
+import 'package:flutter/material';
+import 'package:webview_flutter/webview_flutter.dart';
 
 void main() {
-  runApp(const KbcSorteiosApp());
+  runApp(const MyApp());
 }
 
-class KbcSorteiosApp extends StatelessWidget {
-  const KbcSorteiosApp({Key? key}) : super(key: key);
+class MyApp extends StatelessWidget {
+  const MyApp({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'kbc-Sorteios',
+      debugShowCheckedModeBanner: false,
       theme: ThemeData.dark(),
-      home: const HomeScreen(),
+      home: const WebPage(),
     );
   }
 }
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+class WebPage extends StatefulWidget {
+  const WebPage({Key? key}) : super(key: key);
+
+  @override
+  State<WebPage> createState() => _WebPageState();
+}
+
+class _WebPageState extends State<WebPage> {
+  late final WebViewController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = WebViewController()
+      ..setJavaScriptMode(JavaScriptMode.unrestricted)
+      ..setBackgroundColor(const Color(0xFF020617))
+      ..loadFlutterAsset('assets/index.html');
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('kbc-Sorteios'),
+      body: SafeArea(
+        child: WebViewWidget(controller: _controller),
       ),
-      body: const Padding(
-        padding: EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'kbc-Sorteios',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 10),
-            Text(
-              'Aplicativo completo de gerenciamento de campeonatos de futebol, controle de presença (desativado por padrão) e cronômetro com sirene de 8 segundos.',
-            ),
-          ],
-        ),
-      ),
-    ); 
+    );
   }
 }
